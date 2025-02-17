@@ -565,7 +565,7 @@ void startAP() {
       Serial.print("Sending string: ");
       Serial.println(command);
       delay(10);
-      sendAltEnter();
+      sendAltCtrlT();
 
       delay(200);
       sendString(command);
