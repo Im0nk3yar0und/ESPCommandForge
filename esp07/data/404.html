@@ -7,25 +7,24 @@
     <link rel="icon" href="favicon-48x48.png" sizes="48x48" type="image/png">
     <title>Evil Corp</title>
     <style>
-      
-    /* Container for the animation (monkey_404) */
+        /* Container for the animation (monkey_404) */
 		#monkey_404 {
-		  width: 800px;				    /* Width of the animation container */
-		  height: 480px;			    /* Height of the animation container */
-		  position: absolute;		  /* Positions the container relative to the viewport */
-		  left: 50%;				      /* Moves the container to the horizontal center */
-		  top: 50%;					      /* Moves the container to the vertical center */
+		  width: 800px;				/* Width of the animation container */
+		  height: 480px;			/* Height of the animation container */
+		  position: absolute;		/* Positions the container relative to the viewport */
+		  left: 50%;				/* Moves the container to the horizontal center */
+		  top: 50%;					/* Moves the container to the vertical center */
 		  margin-left: -400px;		/* Adjusts for the width to center the container */
-		  margin-top: -240px;		  /* Adjusts for the height to center the container */
+		  margin-top: -240px;		/* Adjusts for the height to center the container */
 
 
 			/* Styling for various elements within the SVG */
 			.st0 { fill: #e8ebed; }					/* Background color for the element */
 			.st1 { fill: #ffffff; }					/* Sets the fill color to white */
 			.st2 { 
-				fill: none;							      /* No fill, only the stroke will be visible */
-				stroke: #89949b;					    /* Stroke color */
-				stroke-width: 3;					    /* Width of the stroke */
+				fill: none;							/* No fill, only the stroke will be visible */
+				stroke: #89949b;					/* Stroke color */
+				stroke-width: 3;					/* Width of the stroke */
 				stroke-linecap: round;				/* Rounds the ends of lines */
 				stroke-linejoin: round;				/* Rounds the corners where lines meet */
 				stroke-miterlimit: 10;				/* Limit for the miter join length */
@@ -126,7 +125,7 @@
 			/* Animation for the monkey's arm */
 			#arm {
 				transform-origin: 155px 292px;					/* Sets the pivot point for the rotation */
-				transform: rotateZ(-2deg);  					  /* Initial rotation angle of the arm */
+				transform: rotateZ(-2deg);  					/* Initial rotation angle of the arm */
 			}
 
 			/* Animation for the monkey's breathing effect */
@@ -143,7 +142,7 @@
 
 			/* Animation delays for each floating object */
 			#zelda {
-				animation-delay: 0s;							   /* Starts immediately */
+				animation-delay: 0s;							/* Starts immediately */
 				animation-duration: 3s;							/* Lasts for 3 seconds */					
 			}
 
@@ -237,8 +236,8 @@
 		}
 
 		@keyframes blink-l {
-		  0% { transform: rotateX(0deg);  }					  /* Open state */
-		  2% { transform: rotateX(80deg); }					  /* Closed state */
+		  0% { transform: rotateX(0deg);  }					/* Open state */
+		  2% { transform: rotateX(80deg); }					/* Closed state */
 		  4%, 20% { transform: rotateX(0deg);  }			/* Returns to open */
 		  22% {	transform: rotateX(80deg); }
 		  24%, 30% { transform: rotateX(0deg);  }

